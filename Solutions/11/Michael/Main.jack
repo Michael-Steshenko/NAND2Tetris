@@ -1,0 +1,20 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/11/Average/Main.jack
+
+// (Same as projects/09/Average/Main.jack)
+
+class Main {
+   function void main() {
+     var int x;
+     var Array a; 
+     var int length;
+     var int i, sum;
+
+	 let x = 5 = 3 + 2
+     }
+     
+     do Output.printInt(x);
+     return;
+   }

@@ -1,0 +1,21 @@
+michael, avner
+===============================================================================
+Michael Steshenko, ID 317028041, michael.steshenko@mail.huji.ac.il
+Avner Duchovni, ID 301805230, avner.duchovni@mail.huji.ac.il
+===============================================================================
+
+                           Project 5 - Computer Architecture
+                           ----------------------- 
+  
+
+Submitted Files
+---------------
+README - This file.
+Memory.hdl - The Hack computer memory, consisting of 16K RAM, and I/O mapped
+ screen and keyboard
+CPU.hdl - The Hack computer CPU, consisting of an ALU, A-register, D-register,
+ and a control unit
+Computer.hdl - A Hack computer using a CPU, memory and ROM
+ExtendAlu.hdl - and extended version of the Hack ALU, allowing to multiply numbers and
+ shift numbers right and left
+CpuMul.hdl - An extended Hack computer using an extended ALU

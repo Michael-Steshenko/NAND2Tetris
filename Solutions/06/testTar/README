@@ -1,0 +1,18 @@
+michael, avner
+===============================================================================
+Michael Steshenko, ID 317028041, michael.steshenko@mail.huji.ac.il
+Avner Duchovni, ID 301805230, avner.duchovni@mail.huji.ac.il
+===============================================================================
+
+                           Project 6 - Hack Assembler
+                           ----------------------- 
+  
+
+Submitted Files
+---------------
+README - 		This file.
+Makefile - 		A make file. Since the project is written in python, the makefile doesn't really
+				do anything except giving permissions
+Assembler.py - 	The written Assembler, translating a single or multiple .asm files that contain
+				Hack assembly code into respective .hack files, contianing hack binary code.
+Assembler -		The executable file.

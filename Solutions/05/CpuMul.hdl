@@ -1,0 +1,62 @@
+/**
+* This chip is an extension of the book CPU by using the extended ALU.
+* More specificly if instruction[15]==0 or (instruction[14] and instruction[13] equals 1)
+* the CpuMul behave exactly as the book CPU.
+* While if it is C instruction and instruction[13] == 0 the output will be D*A/M 
+* (according to instruction[12]).
+* Moreover, if it is c instruction and instruction[14] == 0 it will behave as follows:
+*
+* instruction:  | 12 | 11 | 10 |
+* _____________________________
+* shift left D  | 0  | 1  | 1  |
+* shift left A  | 0  | 1  | 0  |
+* shift left M  | 1  | 1  | 0  |
+* shift right D | 0  | 0  | 1  |
+* shift right A | 0  | 0  | 0  |
+* shift right M | 1  | 0  | 0  |
+**/
+
+CHIP CpuMul{
+
+    IN  inM[16],         // M value input  (M = contents of RAM[A])
+        instruction[16], // Instruction for execution
+        reset;           // Signals whether to re-start the current
+                         // program (reset=1) or continue executing
+                         // the current program (reset=0).
+
+    OUT outM[16],        // M value output
+        writeM,          // Write into M? 
+        addressM[15],    // Address in data memory (of M)
+        pc[15];          // address of next instruction
+
+    PARTS:
+
+	//A Register input and load control
+    Mux16(a=instruction, b=ALUOut, sel=instruction[15], out=ARegisterInput);
+	Not(in=instruction[15], out=AInstruction);
+	Or(a=AInstruction, b=instruction[5], out=ARegisterLoad);
+	ARegister(in=ARegisterInput, load=ARegisterLoad, out=ARegisterOut,
+		out[0..14]=addressM);
+	
+	//D Register input and control, ALU inputs
+	Mux16(a=ARegisterOut, b=inM, sel=instruction[12], out=ALUY);
+	ExtendAlu(x=ALUX, y=ALUY, instruction=instruction[6..14], out=ALUOut, out=outM,
+	 		zr=zr, ng=ng);
+	And(a=instruction[4], b=instruction[15], out=DRegisterLoad);
+	DRegister(in=ALUOut, load=DRegisterLoad, out=ALUX);
+	
+	//PC control - jump instruction control. INC is set to true.
+	And(a=zr, b=instruction[1], out=Jump1); //jump if ALU output is zero
+	And(a=ng, b=instruction[2], out=Jump2); //jump if ALU output is negative
+	Not(in=ng, out=Notng);
+	Not(in=zr, out=Notzr);
+	And(a=Notng, b=Notzr, out=positive);
+	And(a=positive, b=instruction[0], out=Jump3); //jump if ALU output is positive
+	Or(a=Jump1, b=Jump2, out=Jump1n2); 
+	Or(a=Jump1n2, b=Jump3, out=Jump); //whether a jump condition is matched to instruction
+	And(a=Jump, b=instruction[15], out=DoJump);
+	//jump iff a condition is met and the instruction is C instruction
+	PC(in=ARegisterOut, load=DoJump, reset=reset, inc=true, out[0..14]=pc);
+	
+	And(a=instruction[3], b=instruction[15], out=writeM); //whether to write to memory
+}

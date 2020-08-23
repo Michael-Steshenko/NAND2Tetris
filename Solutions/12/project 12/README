@@ -1,0 +1,21 @@
+michael, avner
+===============================================================================
+Michael Steshenko, ID 317028041, michael.steshenko@mail.huji.ac.il
+Avner Duchovni, ID 301805230, avner.duchovni@mail.huji.ac.il
+===============================================================================
+
+                           Project 12 - OS
+                           ----------------------- 
+  
+
+Submitted Files
+---------------
+Keyboard.jack - responsible for the keyboard function of the HACK computer
+Math.jack	  - implementations of various math operation for the OS
+Memory.jack	  - implementation of memory allocation and deallocation for the OS
+Output.jack	  - an OS library of functions designed to output data to user
+Screen.jack	  - a library of functions for displaying graphics on the screen
+String.jack	  - a class implementing a String type
+Sys.jack      - a library that supports various program execution services
+Array.jack	  - a class implementing an Array
+README 		  - this file

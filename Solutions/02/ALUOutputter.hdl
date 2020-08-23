@@ -1,0 +1,31 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/02/ALU.hdl
+
+/**
+ * Splits the input and returns it 
+ */
+
+// Implementation: 
+// returns the in as is to out 
+// if (in == 0) set zr = 1
+// if (in < 0) set ng = 1
+
+
+CHIP ALUOutputter {
+    IN in[16];   
+    OUT out[16], zr, ng;
+
+    PARTS:
+	And16(a=in, b=true, out=out);
+
+	Or8Way(in=in[0..7], out=zrcheck1);
+	Or8Way(in=in[8..15], out=zrcheck2);
+	Or(a=zrcheck1, b=zrcheck2, out=notzr);
+	Not(in=notzr, out=zr);
+	
+	And(a=in[15], b=true, out=ng);
+}
+	
+	

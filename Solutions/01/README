@@ -1,0 +1,28 @@
+michael, avner
+===============================================================================
+Michael Steshenko, ID 317028041, michael.steshenko@mail.huji.ac.il
+Avner Duchovni, ID 301805230, avner.duchovni@mail.huji.ac.il
+===============================================================================
+
+                           Project 1 - Logic gates in HDL
+                           ----------------------- 
+  
+
+Submitted Files
+---------------
+README - This file.
+Not.hdl - implementing a Not gate
+And.hdl - implementing an And gate
+Or.hdl - implementing an Or gate
+Xor.hdl - implementing a Xor gate
+Mux.hdl - implementing a Multiplexor gate
+Mux16.hdl - implementing a 16 bit Multiplexor gate
+DMux.hdl - implementing a Demultiplexor gate
+Not16.hdl - implementing a 16 bit Not gate
+And16.hdl - implementing a 16 bit And gate
+Or16.hdl - implementing a 16 bit Or gate
+Or8Way.hdl - implementing a 8 way Or gate
+Mux4Way16.hdl - implementing a 16 bit 4-way Multiplexor
+Mux8Way16.hdl - implementing a 16 bit 8-way Multiplexor
+DMux4Way.hdl - implementing a 4-way Demultiplexor
+DMux8Way.hdl - implementing a 8-way Demultiplexor

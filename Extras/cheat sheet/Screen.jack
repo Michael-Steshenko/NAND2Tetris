@@ -1,0 +1,200 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Screen.jack
+
+/**
+ * A library of functions for displaying graphics on the screen.
+ * The Hack physical screen consists of 512 rows (indexed 0..511, top to bottom)
+ * of 256 pixels each (indexed 0..255, left to right). The top left pixel on 
+ * the screen is indexed (0,0).
+ */
+ 
+class Screen {
+     
+	static Array bitMap;
+    static boolean curColor;
+
+    /** Initializes the Screen. */
+    function void init() {
+		var int bit, counter;
+		
+		let bitMap = Array.new(16);
+		let curColor = true;
+		let bit = 1;
+		
+		while(counter < 16){
+			let bitMap[counter] = bit;
+			let bit = bit + bit;
+			let counter = counter + 1;
+		}
+		return;
+    }
+
+    /** Erases the entire screen. */
+    function void clearScreen() {
+		var int addr;
+		let addr = 16384;
+		
+		while(addr < 24575){
+			do Memory.poke(addr, false);
+			let addr = addr + 1;
+		}
+		return;
+    }
+
+    /** Sets the current color, to be used for all subsequent drawXXX commands.
+     *  Black is represented by true, white by false. */
+    function void setColor(boolean b) {
+		let curColor = b;
+		return;
+    }
+
+    /** Draws the (x,y) pixel, using the current color. */
+    function void drawPixel(int x, int y) {
+		var int memoryPos, bit, calcTemp1, calcTemp2, val;
+		
+		let calcTemp2 = x/16;
+		let memoryPos = 16384 + (y * 32) + calcTemp2;
+		let calcTemp1 = x - (calcTemp2 * 16);
+		let bit = bitMap[calcTemp1];
+		let val = Memory.peek(memoryPos);
+		
+		if(curColor){
+			let val = val | bit;
+		}
+		else{
+			let val = val & (~bit);
+		}
+		do Memory.poke(memoryPos, val);
+		return;
+    }
+
+    /** Draws a line from pixel (x1,y1) to pixel (x2,y2), using the current color. */
+    function void drawLine(int x1, int y1, int x2, int y2) {
+		var int a, b, dx, dy, adyTobdx, temp;
+		
+		let dx = x2 - x1;
+		let dy = y2 - y1;
+		
+		if(dy = 0){
+			if(x2 > x1){
+				do Screen.drawHorizontal(x1, x2, y1);
+			}
+			else{
+				do Screen.drawHorizontal(x2, x1, y1);
+			}
+			return;
+		}
+		if(dx < 0){
+			let dx = -dx;
+			let temp = x1;
+			let x1 = x2;
+			let x2 = temp;
+			let temp = y1;
+			let y1 = y2;
+			let y2 = temp;
+			let dy = -dy;
+		}
+		if(dy < 0){
+			let dy = -dy;
+			let temp = -1;
+		}
+		else{
+			let temp = 1;
+		}
+		while(~((a > dx)|(b > dy)|(a < 0)|(b < 0))){
+			do Screen.drawPixel(x1 + a, y1 + (temp * b));
+			if(adyTobdx < 0){
+				let a = a + 1;
+				let adyTobdx = adyTobdx + dy;
+			}
+			else{
+				let b = b + 1;
+				let adyTobdx = adyTobdx - dx;
+			}
+		}
+		return;
+    }
+
+    function void drawHorizontal(int x1, int x2, int y) {
+		var int val1, val2, calcTemp1, calcTemp2, calcTemp3, memoryPos1, memoryPos2, bit1, bit2;
+		
+		let calcTemp3 = (x1/16);
+		let memoryPos1 = 16384 + (y*32) + calcTemp3;
+		let calcTemp1 = x1 - (calcTemp3*16);
+		let calcTemp3 = (x2/16);
+		let memoryPos2 = 16384 + (y*32) + calcTemp3;
+		let calcTemp2 = x2 - (calcTemp3*16);
+		
+		if(memoryPos1 = memoryPos2){
+			let calcTemp3 = Math.abs(calcTemp1-calcTemp2) + 1;
+			let calcTemp1 = Math.min(calcTemp1,calcTemp2);
+			while(calcTemp3 > 0){
+				let bit1 = bit1 + bitMap[calcTemp1];
+				let calcTemp3 = calcTemp3-1;
+				let calcTemp1 = calcTemp1+1;
+			}
+			let val1 = Memory.peek(memoryPos1);
+			if(curColor){
+				let val1 = val1 | bit1;
+			}
+			else{
+				let val1 = val1 & (~bit1);
+			}
+			do Memory.poke(memoryPos1,val1);
+			return;
+		}
+		while(~(calcTemp1 > 15)){
+			let bit1 = bit1 + bitMap[calcTemp1];
+			let calcTemp1 = calcTemp1 + 1;
+		}
+		while(~(calcTemp2 < 0)){
+			let bit2 = bit2 + bitMap[calcTemp2];
+			let calcTemp2 = calcTemp2 - 1;
+		}
+		let val1 = Memory.peek(memoryPos1);
+		let val2 = Memory.peek(memoryPos2);
+		if(curColor){
+			let val1 = val1 | bit1;
+			let val2 = val2 | bit2;
+		}
+		else{
+			let val1 = val1 & (~bit1);
+			let val2 = val2 & (~bit2);
+		}
+		do Memory.poke(memoryPos1, val1);
+		do Memory.poke(memoryPos2, val2);
+		let memoryPos1 = memoryPos1 + 1;
+		while(memoryPos1 < memoryPos2){
+			do Memory.poke(memoryPos1, curColor);
+			let memoryPos1 = memoryPos1 + 1;
+		}
+		return;
+    }
+
+    /** Draws a filled rectangle whose top left corner is (x1, y1)
+     * and bottom right corner is (x2,y2), using the current color. */
+    function void drawRectangle(int x1, int y1, int x2, int y2) {
+		while(~(y1 > y2)){
+			do Screen.drawHorizontal(x1, x2, y1);
+			let y1 = y1 + 1;
+		}
+		return;
+    }
+
+    /** Draws a filled circle of radius r<=181 around (x,y), using the current color. */
+    function void drawCircle(int x, int y, int r) {
+		var int sqRoot, dy;
+		let dy = (-r) + 1;
+		
+		while(dy < r){
+			let sqRoot = Math.sqrt((r * r) - (dy * dy));
+			do Screen.drawHorizontal(x - sqRoot, x + sqRoot, y + dy);
+			let dy = dy + 1;
+		}
+		do Screen.drawPixel(x, y + r);
+		do Screen.drawPixel(x, y - r);
+		return;
+    }
+}

@@ -1,0 +1,22 @@
+michael, avner
+===============================================================================
+Michael Steshenko, ID 317028041, michael.steshenko@mail.huji.ac.il
+Avner Duchovni, ID 301805230, avner.duchovni@mail.huji.ac.il
+===============================================================================
+
+                           Project 3 - RAM
+                           ----------------------- 
+  
+
+Submitted Files
+---------------
+README - This file.
+Bit.hdl - can store 1 bit for read or write.
+Register.hdl - consists of 16 Bits and can store one piece of 16 bit information.
+RAM8.hdl - consists of 8 registers and can store 8 pieces of 16 bit information.
+RAM64.hdl - consists of 8 RAM8 and can store 64 pieces of 16 bit information.
+RAM512.hdl - consists of 8 RAM64 and can store 512 pieces of 16 bit information.
+RAM4K - consists of 8 RAM512 and can store 4096 pieces of 16 bit information.
+RAM16K - consists of 4 RAM4K and can store 16384 pieces of 16 bit information.
+PC.hdl - a 16 bit counter. based on a 16 bit register. If instructed, the counter begins/stops counting.
+The counter can also be reset to 0, or be loaded with 16 bits of information.

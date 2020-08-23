@@ -1,0 +1,37 @@
+michael, avner
+===============================================================================
+Michael Steshenko, ID 317028041, michael.steshenko@mail.huji.ac.il
+Avner Duchovni, ID 301805230, avner.duchovni@mail.huji.ac.il
+===============================================================================
+
+                       Project 4 - Assembler simple progs
+                           ----------------------- 
+  
+
+Submitted Files
+---------------
+README - This file.
+
+Fill.asm - Runs an infinite loop that listens to the keyboard input.
+When a key is pressed (any key), the program blackens the screen,
+i.e. writes "black" in every pixel;
+the screen should remain fully black as long as the key is pressed. 
+When no key is pressed, the program clears the screen, i.e. writes
+"white" in every pixel;
+the screen remains fully clear as long as no key is pressed.
+
+mult.asm - Multiplies R0 and R1 and stores the result in R2.
+(R0, R1, R2 refer to RAM[0], RAM[1], and RAM[2], respectively.)
+assume R0,R1>=0
+
+Sort.asm - Sorts an array from large to small 
+the first index of the array is stored at R14
+the length of the array is stored in R15
+Selection sort implementation.
+
+Divide.asm - The program input will be at R13,R14 
+the result R13/R14 will be stored at R15. discarding the remainder
+assumes both numbers are positive.
+
+
+

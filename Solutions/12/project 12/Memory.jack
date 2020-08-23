@@ -1,0 +1,127 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Memory.jack
+
+/**
+ * This library provides two services: direct access to the computer's main
+ * memory (RAM), and allocation and recycling of memory blocks. The Hack RAM
+ * consists of 32,768 words, each holding a 16-bit binary number.
+ */ 
+class Memory {
+
+	// heap base is 2048
+	// heap bottom is 16384
+	// memorysegment[1] is the size of the memory segment
+	// memorysegment[0] is the pointer to the next free segment
+	
+	static Array ram;
+	static Array freeList;
+	static int blockSize;
+	static int next;
+
+    /** Initializes the class. */
+    function void init() {
+		let blockSize = 1;
+		let next = 0;
+		let ram = 0;
+		let freeList = 2048; // Heap base address
+		let freeList[blockSize] = 14336; // Heap size
+        let freeList[next] = null;
+		return;
+    }
+
+    /** Returns the RAM value at the given address. */
+    function int peek(int address) {
+		return ram[address];
+    }
+
+    /** Sets the RAM value at the given address to the given value. */
+    function void poke(int address, int value) {
+		let ram[address] = value;
+		return;
+    }
+    
+    function int alloc(int size) {
+    	var Array returnBlock;
+    	
+    	let returnBlock = Memory.firstFit(size);
+    	
+		if( returnBlock = null ){ // No available block
+            do Memory.defrag();
+            
+            return Memory.firstFit(size);
+        }    	
+        return returnBlock;
+    }
+    
+    
+    function int firstFit(int size){
+    	//var int printTest;
+    	var Array blockPointer;
+    	var Array lastBlock;
+    	let blockPointer = freeList;
+    	//let lastBlock = blockPointer;
+    	    	
+		if(blockPointer[blockSize] > size){    	
+			let freeList = Memory.doAlloc(blockPointer, size+1);
+			return blockPointer+1;	
+		}
+		
+    	while( ~(blockPointer = null)){
+    	    let lastBlock = blockPointer;
+    		let blockPointer = blockPointer[next];
+    		
+    		//let printTest = blockPointer + blockSize;
+    		//do Output.printInt(printTest);
+    		//do Sys.wait(10000);
+    		//do Output.printInt(blockPointer);
+    		//do Output.println();
+    		//do Output.printInt(blockSize);
+    		if(blockPointer[blockSize] > size){
+    			let lastBlock[next] = Memory.doAlloc(blockPointer, size+1);    		
+    			return blockPointer+1;	
+    		}
+    	}
+    	return null;
+	}	
+    
+    
+    function void defrag(){
+    	return;
+    }
+
+	// Allocate the found block and adjust free
+	// size is the size of the block including the word of its size
+    function Array doAlloc(Array foundBlock, int size) { 		
+        var Array nextBlock;
+        
+        if( foundBlock[1] > (size+2) ) {
+            let nextBlock = foundBlock + size;
+            let nextBlock[0] = foundBlock[0];
+            let nextBlock[1] = foundBlock[1] - size;
+            //let foundBlock = foundBlock + 1;
+            let foundBlock[0] = size;
+        }
+        else { 
+            let nextBlock = foundBlock[0];
+            let foundBlock[0] = foundBlock[1];
+        }
+        
+        return nextBlock;
+    }
+	
+	
+	/** De-allocates the given object (cast as an array) by making
+     *  it available for future allocations. */
+	function void deAlloc(Array block){
+		let block = block - 1;
+		let block[blockSize] = block[0];
+		let block[next] = freeList;
+		let freeList = block;
+		return;
+		}
+	
+	
+	}
+	

@@ -1,0 +1,19 @@
+michael, avner
+===============================================================================
+Michael Steshenko, ID 317028041, michael.steshenko@mail.huji.ac.il
+Avner Duchovni, ID 301805230, avner.duchovni@mail.huji.ac.il
+===============================================================================
+
+                           Project 8 - Extended VM Translator
+                           ----------------------- 
+  
+
+Submitted Files
+---------------
+VMTranslator -		A shell script that runs the VMTranslator
+README - 			This file.
+makefile - 			A make file. Since the project is written in python, the makefile doesn't 
+					really do anything
+VMTranslator.py - 	The written Virtual Machine translator. Translates multiple .vm files into
+					a single assembly .asm file. This version of the VMTranslator is an extended
+					version of Project 7 Translator, supporting flow control and functions.
