@@ -704,7 +704,7 @@ def translate_files():
         # folder_name = path.split("\\")
         #print(asm_file_name)
         asm_file = open(asm_file_name, 'w')
-        #asm_file.write(bootstrap_code)
+        asm_file.write(bootstrap_code)
         file_root = path + "/"
         for file in os.listdir(path):
             filename = os.path.splitext(file)
@@ -718,7 +718,7 @@ def translate_files():
         g_filename = filename[0].split("/")[-1]
         asm_file_name = filename[0] + ".asm"
         asm_file = open(asm_file_name, 'w')
-        #asm_file.write(bootstrap_code)
+        asm_file.write(bootstrap_code)
         translate_file(path, asm_file)
 
 

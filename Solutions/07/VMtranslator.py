@@ -28,13 +28,12 @@ VAR_FIRST_MEM = 16
 lt_calls = 0
 gt_calls = 0
 eq_calls = 0
-func_calls = 0
 g_filename = ""
 
 
 def stack_push_rest(location, i):
     """receives string - a name of the location in memory which can be one of the following:
-    argument, local, this, that, pointer, temp. and 'i' a string representation of the relative location from
+    argument, local, this, that, pointer, temp. and i a string representation pf the relative location from
     'location' argument"""
     return_string = "@//location\n" \
                     "D=M\n" \
@@ -101,6 +100,7 @@ def stack_push_temp_or_pointer(location, i):
     return_string = return_string.replace("//location", location)
     return_string = return_string.replace("//i", i)
     return return_string
+
 
 
 def stack_push(location, i):
@@ -189,6 +189,7 @@ def stack_pop_temp_or_pointer(location, i):
     return return_string
 
 
+
 def determine_location(location):
     if location == "local":
         location = "LCL"
@@ -203,7 +204,6 @@ def determine_location(location):
         location = "THAT"
 
     return location
-
 
 def build_static_var_name(i):
     return g_filename + "." + i
@@ -251,6 +251,7 @@ def asm_eq():
                  "(EQ_END"+str(eq_calls)+")"
     eq_calls += 1
     return eq_command
+
 
 
 def asm_gt():
@@ -521,136 +522,4 @@ def translate_files():
         translate_file(path, asm_file)
 
 
-#translate_files()
-
-# Project 8 functions:
-
-
-def build_funcName(funcName):
-    return g_filename+"."+funcName
-
-
-def asm_func_declaration(funcName, nVars):
-    """
-    :param funcName: the name of the function
-    :param i: the number of local arguments the function has
-    :return: an assembly string representing the function declaration
-    """
-    return_string = "("+build_funcName(funcName)+")\n" \
-                    "@0\n" \
-                    "D=A\n"
-    for i in range(nVars):
-        return_string += "@SP\n" \
-                        "A=M\n" \
-                        "M=D\n" \
-                        "@SP\n" \
-                        "M=M+1\n"\
-
-    return return_string
-
-
-def asm_func_call(funcName, nArgs):
-    funcName = build_funcName(funcName)
-    return_address = funcName+str(func_calls)   # making a globally unique func name
-
-    return_string = asm_push_label_value(return_address)+"\n"   # using the label that is declared later for return add
-
-    return_string += stack_push_rest("local", 0) + "\n"         # saves LCL, ARG, THIS and THAT of the caller
-    return_string += stack_push_rest("argument", 0) + "\n"
-    return_string += stack_push_rest("this", 0) + "\n"
-    return_string += stack_push_rest("that", 0) + "\n"
-
-    # reposition ARG, ARG = SP-5-nArgs
-    return_string += "@SP\n" \
-                     "D=M\n" \
-                     "@5\n" \
-                     "D=D-A\n" \
-                     "@" + str(nArgs) + "\n" \
-                     "D=D-A\n" \
-                     "@ARG\n" \
-                     "M=D\n"
-
-    # repositioning LCL, LCL = SP
-    return_string += "@SP\n" \
-                     "D=M\n" \
-                     "@LCL\n" \
-                     "M=D\n"
-
-    # transfer control to the called function
-    return_string += get_flow_goto(funcName)+"\n"
-
-    #declare a label for the return function
-    return_string += "("+return_address+")"
-
-    func_calls += 1
-
-    return return_string
-
-
-def asm_push_label_value(label_name):
-    """
-    :param label_name: a string representing the label name
-    :return: assembly code that pushes the the address of the variable @label_name into the stack
-    """
-    return_string = "@"+label_name+"\n" \
-                    "D=A\n" \
-                    "@SP\n" \
-                    "A=M\n" \
-                    "M=D\n" \
-                    "@SP\n" \
-                    "M=M+1"
-    return return_string
-
-
-def asm_return():
-
-    return_string = "@LCL\n" \
-                    "D=M\n" \
-                    "@endFrame\n" \
-                    "M=D\n" \
-                    "@5\n" \
-                    "A=D-A\n" \
-                    "D=M\n" \
-                    "@retAddr\n" \
-                    "M=D\n"
-    #*ARG = pop()
-    return_string += "@ARG\n" \
-                     "D=M\n" \
-                     "@13\n" \
-                     "M=D\n" \
-                     "@SP\n" \
-                     "A=M-1\n" \
-                     "D=M\n" \
-                     "@13\n" \
-                     "A=M\n" \
-                     "M=D\n"
-
-    #SP = ARG+1
-    return_string += "@ARG\n" \
-                     "D=M+1\n" \
-                     "@SP\n" \
-                     "M=D\n"
-
-    # Recovering calling function initial pointers state, THAT, THIS, ARG and LCL
-
-    Recovery_Pointers = ["THAT", "THIS", "ARG", "LCL"]
-
-    recovery_string = "@endFrame\n" \
-                      "M=M-1\n" \
-                      "A=M\n" \
-                      "D=M\n" \
-                      "@//recovery_pointer\n" \
-                      "M=D\n"
-
-    for i in range(len(Recovery_Pointers)):
-        return_string += recovery_string.replace("//recovery_pointer", Recovery_Pointers[i])
-
-    #
-    return_string += get_flow_goto("retAddr")
-
-
-
-def get_flow_goto(location):
-    goto_string = "@"+location + \
-                  "\n0;JMP"
-    return goto_string
+translate_files()
